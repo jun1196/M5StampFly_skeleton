@@ -171,6 +171,8 @@ void init_mode(void) {
     StampFly.pid.pitch.set_parameter(0.08, 1.0e1, 0.01, 0.125, 0.0025);
     StampFly.pid.yaw.set_parameter(0.08, 1.0e2, 0.0, 0.125, 0.0025);
 
+
+
     //Mode change
     StampFly.flag.mode = AVERAGE_MODE;
     return;
@@ -204,19 +206,23 @@ void flight_mode(void) {
     float throttle_delta = limit(deadband(Stick[THROTTLE], 0.065), 0.0, 0.9);
 
     //Command
-    float roll_com = 40.0*PI/180*limit(deadband(Stick[AILERON], 0.05), -1.0, 1.0);
-    float pitch_com = 40.0*PI/180*limit(deadband(Stick[ELEVATOR], 0.05), -1.0, 1.0);
-    float yaw_com = 180.0*PI/180*limit(deadband(Stick[RUDDER], 0.05), -1.0, 1.0);
+    float roll_com = 20.0*PI/180*limit(deadband(Stick[AILERON], 0.05), -1.0, 1.0);
+    float pitch_com = 20.0*PI/180*limit(deadband(Stick[ELEVATOR], 0.05), -1.0, 1.0);
+    float yaw_com = 5.0*PI/180*limit(deadband(Stick[RUDDER], 0.05), -1.0, 1.0);
+    //USBSerial.printf("Throttle: %f, Roll: %f, Pitch: %f, Yaw: %f\n", 
+    //    throttle_delta, roll_com, pitch_com, yaw_com);
+
 
     //Error
     float roll_err = roll_com - StampFly.sensor.roll_rate;
     float pitch_err = pitch_com - StampFly.sensor.pitch_rate;
     float yaw_err = yaw_com - StampFly.sensor.yaw_rate;
+    //USBSerial.printf("Roll: %9.6f, Pitch: %9.6f, Yaw: %9.6f\n", roll_err, pitch_err, yaw_err);
 
     //PID
-    float roll_delta = StampFly.pid.roll.update(roll_err, StampFly.times.interval_time);
-    float pitch_delta = StampFly.pid.pitch.update(pitch_err, StampFly.times.interval_time);
-    float yaw_delta = StampFly.pid.yaw.update(yaw_err, StampFly.times.interval_time);
+    float roll_delta = 0.1f*roll_err;
+    float pitch_delta = 0.0f*pitch_err;
+    float yaw_delta = 0.0f*yaw_err;
 
     //Set Duty
     float fr_duty = limit(throttle_delta - roll_delta + pitch_delta + yaw_delta, 0.0, 0.9);
