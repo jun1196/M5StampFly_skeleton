@@ -32,7 +32,7 @@
 
 uint8_t Telem_mode     = 0;
 uint8_t Telem_cnt      = 0;
-const uint8_t MAXINDEX = 11*4+2;
+const uint8_t MAXINDEX = 14*4+2;
 const uint8_t MININDEX = 30;
 
 void telemetry_sequence(void);
@@ -146,6 +146,9 @@ void make_telemetry_data(uint8_t* senddata) {
     data_set(senddata, StampFly.sensor.accx, &index);                   // 9 accx
     data_set(senddata, StampFly.sensor.accy, &index);                   // 10 accy
     data_set(senddata, StampFly.sensor.accz, &index);                   // 11 accz
+    data_set(senddata, StampFly.ref.roll, &index);                      // 12 Roll_ref
+    data_set(senddata, StampFly.ref.pitch, &index);                     // 13 Pitch_ref
+    data_set(senddata, StampFly.ref.yaw, &index);                       // 14 Yaw_ref
 }
 
 void data_set(uint8_t* datalist, float value, uint8_t* index) {
