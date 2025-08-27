@@ -29,6 +29,35 @@ M5Stack社が発売した StampFly と AtomJoyStick のファームウェアの�
 テレメトリの出力は左から
 時間、制御周期、ロール角(rad)、ピッチ角（rad）、ヨー角（rad）、ロール角速度（rad/s）、ピッチ角速度（rad/s）、ヨー角速度（rad/s）、X軸加速度（G）、Y軸加速度（G）、Z軸加速度（G）、ロール目標、ピッチ目標、ヨー目標
 
+## stampFly_t構造体
+```
+typedef struct{
+    sensor_value_t sensor;
+    flag_t flag;
+    counter_t counter;
+    control_ref_t ref;
+    times_t times;
+}stampfly_t;
+```
+
+### sensor_value_t構造体
+```
+typedef struct{
+    float accx;
+    float accy;
+    float accz;
+    float roll_rate;
+    float pitch_rate;
+    float yaw_rate;
+    float roll_angel;
+    float pitch_angle;
+    float yaw_angle;
+    float voltage;
+    uint16_t bottom_tof_range;
+}sensor_value_t;
+
+```
+
 目標が角度なのか角速度なのかは適宜、プログラマーが決めれば良い
 
 ## 参考資料
