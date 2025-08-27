@@ -25,6 +25,12 @@ M5Stack社が発売した StampFly と AtomJoyStick のファームウェアの�
 ### 次は"sensor.cpp"
 センサの処理が書かれているので"sensor.cpp"も重要です。
 
+## Telemetry
+テレメトリの出力は左から
+時間、制御周期、ロール角(rad)、ピッチ角（rad）、ヨー角（rad）、ロール角速度（rad/s）、ピッチ角速度（rad/s）、ヨー角速度（rad/s）、X軸加速度（G）、Y軸加速度（G）、Z軸加速度（G）、ロール目標、ピッチ目標、ヨー目標
+
+目標が角度なのか角速度なのかは適宜、プログラマーが決めれば良い
+
 ## 参考資料
 
 - StampFly & Atom ジョイスティック ファームウェア書き込みガイド https://docs.m5stack.com/ja/guide/hobby_kit/stampfly/stamply_firmware
