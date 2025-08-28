@@ -204,9 +204,9 @@ void flight_mode(void) {
     float yaw_rate_error   = StampFly.ref.yaw   - StampFly.sensor.yaw_rate;
 
     //比例ゲイン
-    float kp_roll  = 0.06;
-    float kp_pitch = 0.06;
-    float kp_yaw   = 0.2;
+    float kp_roll  = 0.049;
+    float kp_pitch = 0.071;
+    float kp_yaw   = 0.363;
 
     //比例制御則
     float delta_roll  = kp_roll  * roll_rate_error;
@@ -234,10 +234,10 @@ void flight_mode(void) {
     rear_right_duty  = limit(rear_right_duty,  0.0, 0.95);
 
     //不感帯を適用（ファイルの最後にdeadband関数追加）
-    front_left_duty  = deadband(front_left_duty,  0.05);
-    front_right_duty = deadband(front_right_duty, 0.05);
-    rear_left_duty   = deadband(rear_left_duty,   0.05);
-    rear_right_duty  = deadband(rear_right_duty,  0.05);
+    front_left_duty  = deadband(front_left_duty,  0.03);
+    front_right_duty = deadband(front_right_duty, 0.03);
+    rear_left_duty   = deadband(rear_left_duty,   0.03);
+    rear_right_duty  = deadband(rear_right_duty,  0.03);
 
     //PWMのDutyをセット
     motor_set_duty_fl(front_left_duty);
