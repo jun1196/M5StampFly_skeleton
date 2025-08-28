@@ -191,16 +191,15 @@ void flight_mode(void) {
     float throttle_delta = limit(Stick[THROTTLE], 0.0, 0.9);
     
     //時間制御関係
-    //2秒間停止、2秒間回転を以下で制御
+    //2秒間回転,2秒間停止を以下で制御
     if (StampFly.counter.loop < 800) {
-        throttle_delta = 0.0f;
-    }
-    else if (StampFly.counter.loop < 1600) {
-        StampFly.counter.loop ++;
         throttle_delta = 0.15f;
     }
+    else if (StampFly.counter.loop < 1600) {
+        throttle_delta = 0.0f;
+    }
     else StampFly.counter.loop = 0;
-    StampFly.counter.loop++;
+    StampFly.counter.loop++; //時間制御用カウンタをカウントアップ
 
     motor_set_duty_fl(throttle_delta);
     motor_set_duty_fr(throttle_delta);
