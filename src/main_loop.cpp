@@ -188,23 +188,23 @@ void flight_mode(void) {
     // Set LED Color
     onboard_led1(YELLOW, 1);
     onboard_led2(YELLOW, 1);
-    float throttle_delta = limit(Stick[THROTTLE], 0.0, 0.9);
+    StampFly.ref.throttle = limit(Stick[THROTTLE], 0.0, 0.9);
     
     //時間制御関係
     //2秒間回転,2秒間停止を以下で制御
     if (StampFly.counter.loop < 800) {
-        throttle_delta = 0.15f;
+        StampFly.ref.throttle = 0.15f;
     }
     else if (StampFly.counter.loop < 1600) {
-        throttle_delta = 0.0f;
+        StampFly.ref.throttle = 0.0f;
     }
     else StampFly.counter.loop = 0;
     StampFly.counter.loop++; //時間制御用カウンタをカウントアップ
 
-    motor_set_duty_fl(throttle_delta);
-    motor_set_duty_fr(throttle_delta);
-    motor_set_duty_rl(throttle_delta);
-    motor_set_duty_rr(throttle_delta);
+    motor_set_duty_fl(StampFly.ref.throttle);
+    motor_set_duty_fr(StampFly.ref.throttle);
+    motor_set_duty_rl(StampFly.ref.throttle);
+    motor_set_duty_rr(StampFly.ref.throttle);
 
     //Arm（スロットル）ボタンを監視して押されたらParkingモードに復帰するためのコード
     if (armButtonPressedAndRerleased)StampFly.flag.mode = PARKING_MODE;
