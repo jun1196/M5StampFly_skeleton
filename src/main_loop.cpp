@@ -189,15 +189,46 @@ void flight_mode(void) {
     onboard_led1(YELLOW, 1);
     onboard_led2(YELLOW, 1);
     StampFly.ref.throttle = limit(Stick[THROTTLE], 0.0, 0.9);
+    
+    //制御目標を送信機のStickの倒し量から取得
+    StampFly.ref.roll = limit(Stick[AILERON], -0.9, 0.9);
+    StampFly.ref.pitch = limit(Stick[ELEVATOR], -0.9, 0.9);
+    StampFly.ref.yaw = limit(Stick[RUDDER], -0.9, 0.9);
 
-    motor_set_duty_fl(StampFly.ref.throttle);
-    motor_set_duty_fr(StampFly.ref.throttle);
-    motor_set_duty_rl(StampFly.ref.throttle);
-    motor_set_duty_rr(StampFly.ref.throttle);
+    //角速度誤差を計算
+    float roll_rate_error  = StampFly.ref.roll  - StampFly.sensor.roll_rate;
+    float pitch_rate_error = StampFly.ref.pitch - StampFly.sensor.pitch_rate;
+    float yaw_rate_error   = StampFly.ref.yaw   - StampFly.sensor.yaw_rate;
+
+    //比例ゲイン
+    float kp_roll = 1.0;
+    float kp_pitch = 1.0;
+    float kp_yaw = 1.0;
+
+    //比例制御則
+    float delta_roll  = kp_roll  * roll_rate_error;
+    float delta_pitch = kp_pitch * pitch_rate_error;
+    float delta_yaw   = kp_yaw   * yaw_rate_error;
+
+    //ミキシング
+    float front_left_duty  = StampFly.ref.throttle + delta_roll + delta_pitch - delta_yaw;
+    float front_right_duty = StampFly.ref.throttle - delta_roll + delta_pitch + delta_yaw;
+    float rear_left_duty   = StampFly.ref.throttle + delta_roll - delta_pitch + delta_yaw;
+    float rear_right_duty  = StampFly.ref.throttle - delta_roll - delta_pitch - delta_yaw;
+
+    motor_set_duty_fl(front_left_duty);
+    motor_set_duty_fr(front_right_duty);
+    motor_set_duty_rl(rear_left_duty);
+    motor_set_duty_rr(rear_right_duty);
 
     //Arm（スロットル）ボタンを監視して押されたらParkingモードに復帰するためのコード
     if (armButtonPressedAndRerleased)StampFly.flag.mode = PARKING_MODE;
     armButtonPressedAndRerleased = 0;
+
+    //Stickの値をシリアルモニタに送る（Lesson2）
+    USBSerial.printf("Throttle: %5.2f AILERON: %5.2f ELEVATOR: %5.2f RUDDER: %5.2f\n", 
+        Stick[THROTTLE], Stick[AILERON], Stick[ELEVATOR], Stick[RUDDER]);
+
 }
 
 void parking_mode(void) {
