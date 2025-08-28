@@ -190,10 +190,10 @@ void flight_mode(void) {
     onboard_led2(YELLOW, 1);
     StampFly.ref.throttle = limit(Stick[THROTTLE], 0.0, 0.9);
 
-    motor_set_duty_fl(0.15);
-    motor_set_duty_fr(0.15);
-    motor_set_duty_rl(0.15);
-    motor_set_duty_rr(0.15);
+    motor_set_duty_fl(StampFly.ref.throttle);
+    motor_set_duty_fr(StampFly.ref.throttle);
+    motor_set_duty_rl(StampFly.ref.throttle);
+    motor_set_duty_rr(StampFly.ref.throttle);
 
     //Arm（スロットル）ボタンを監視して押されたらParkingモードに復帰するためのコード
     if (armButtonPressedAndRerleased)StampFly.flag.mode = PARKING_MODE;
