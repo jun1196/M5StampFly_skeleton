@@ -201,9 +201,9 @@ void flight_mode(void) {
     float yaw_rate_error   = StampFly.ref.yaw   - StampFly.sensor.yaw_rate;
 
     //比例ゲイン
-    float kp_roll = 1.0;
+    float kp_roll  = 1.0;
     float kp_pitch = 1.0;
-    float kp_yaw = 1.0;
+    float kp_yaw   = 1.0;
 
     //比例制御則
     float delta_roll  = kp_roll  * roll_rate_error;
@@ -216,6 +216,13 @@ void flight_mode(void) {
     float rear_left_duty   = StampFly.ref.throttle + delta_roll - delta_pitch + delta_yaw;
     float rear_right_duty  = StampFly.ref.throttle - delta_roll - delta_pitch - delta_yaw;
 
+    //Duty比を0.0~0.95に制限
+    front_left_duty  = limit(front_left_duty,  0.0, 0.95);
+    front_right_duty = limit(front_right_duty, 0.0, 0.95);
+    rear_left_duty   = limit(rear_left_duty,   0.0, 0.95);
+    rear_right_duty  = limit(rear_right_duty,  0.0, 0.95);
+
+    //PWMのDutyをセット
     motor_set_duty_fl(front_left_duty);
     motor_set_duty_fr(front_right_duty);
     motor_set_duty_rl(rear_left_duty);
@@ -224,10 +231,6 @@ void flight_mode(void) {
     //Arm（スロットル）ボタンを監視して押されたらParkingモードに復帰するためのコード
     if (armButtonPressedAndRerleased)StampFly.flag.mode = PARKING_MODE;
     armButtonPressedAndRerleased = 0;
-
-    //Stickの値をシリアルモニタに送る（Lesson2）
-    USBSerial.printf("Throttle: %5.2f AILERON: %5.2f ELEVATOR: %5.2f RUDDER: %5.2f\n", 
-        Stick[THROTTLE], Stick[AILERON], Stick[ELEVATOR], Stick[RUDDER]);
 
 }
 
