@@ -57,6 +57,7 @@ void flight_mode(void);
 void parking_mode(void);
 void loop_400Hz(void);
 float limit(float value, float min, float max);
+void led_illumination(void);
 
 // Main loop
 void loop_400Hz(void) {
@@ -203,10 +204,12 @@ void flight_mode(void) {
 void parking_mode(void) {
     //着陸している時に行う処理を記述する
     // Set LED Color
-    onboard_led1(GREEN, 1);
-    onboard_led2(GREEN, 1);
+    //onboard_led1(GREEN, 1);
+    //onboard_led2(GREEN, 1);
 
-    StampFly.counter.loop = 0;
+    //StampFly.counter.loop = 0;
+
+    led_illumination();
     
     motor_stop();
     if (armButtonPressedAndRerleased)StampFly.flag.mode = FLIGHT_MODE;
@@ -217,4 +220,39 @@ float limit(float value, float min, float max) {
     if (value < min) return min;
     if (value > max) return max;
     return value;
+}
+
+void led_illumination(void) {
+    uint32_t color;
+
+    //LEDの色を0.5秒づつ変化させる
+    if (StampFly.counter.loop < 200) {
+        color = 0xFFFFFF;
+    }
+    else if (StampFly.counter.loop < 400) {
+        color = 0x00FFFF;
+    }
+    else if (StampFly.counter.loop < 600) {
+        color = 0x0000FF;
+    }
+    else if (StampFly.counter.loop < 800) {
+        color = 0xFF00FF;
+    }
+    else if (StampFly.counter.loop < 1000) {
+        color = 0xFFFF00;
+    }
+    else if (StampFly.counter.loop < 1200) {
+        color = 0xFF0000;
+    }
+    else if (StampFly.counter.loop < 1400) {
+        color = 0x00FF00;
+    }
+    else {
+        StampFly.counter.loop = 0;
+    }
+    StampFly.counter.loop++;
+
+    onboard_led1(color, 1);
+    onboard_led2(color, 1);
+
 }
