@@ -201,8 +201,8 @@ void flight_mode(void) {
     float yaw_rate_error   = StampFly.ref.yaw   - StampFly.sensor.yaw_rate;
 
     //比例ゲイン
-    float kp_roll  = 1.0;
-    float kp_pitch = 1.0;
+    float kp_roll  = 0.1;
+    float kp_pitch = 0.1;
     float kp_yaw   = 1.0;
 
     //比例制御則
