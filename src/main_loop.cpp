@@ -189,11 +189,17 @@ void flight_mode(void) {
     onboard_led1(YELLOW, 1);
     onboard_led2(YELLOW, 1);
     StampFly.ref.throttle = limit(Stick[THROTTLE], 0.0, 0.9);
+    StampFly.ref.roll = limit(Stick[AILERON], -0.9, 0.9);
+    
+    float front_left_duty  = StampFly.ref.throttle + StampFly.ref.roll;
+    float front_right_duty = StampFly.ref.throttle - StampFly.ref.roll;
+    float rear_left_duty   = StampFly.ref.throttle + StampFly.ref.roll;
+    float rear_right_duty  = StampFly.ref.throttle - StampFly.ref.roll;
 
-    motor_set_duty_fl(StampFly.ref.throttle);
-    motor_set_duty_fr(StampFly.ref.throttle);
-    motor_set_duty_rl(StampFly.ref.throttle);
-    motor_set_duty_rr(StampFly.ref.throttle);
+    motor_set_duty_fl(front_left_duty);
+    motor_set_duty_fr(front_right_duty);
+    motor_set_duty_rl(rear_left_duty);
+    motor_set_duty_rr(rear_right_duty);
 
     //Arm（スロットル）ボタンを監視して押されたらParkingモードに復帰するためのコード
     if (armButtonPressedAndRerleased)StampFly.flag.mode = PARKING_MODE;
