@@ -194,6 +194,8 @@ void flight_mode(void) {
     motor_set_duty_fr(throttle_delta);
     motor_set_duty_rl(throttle_delta);
     motor_set_duty_rr(throttle_delta);
+
+    //Arm（スロットル）ボタンを監視して押されたらParkingモードに復帰するためのコード
     if (armButtonPressedAndRerleased)StampFly.flag.mode = PARKING_MODE;
     armButtonPressedAndRerleased = 0;
 }
