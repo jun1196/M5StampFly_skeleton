@@ -99,6 +99,7 @@ void init_copter(void) {
     led_init();
     // Initialize Serial communication
     USBSerial.begin(115200);
+    USBSerial.setTxTimeoutMs(0);
     delay(1500);
     USBSerial.printf("Start StampFly! Skeleton\r\n");
     motor_init();
@@ -117,7 +118,6 @@ void init_copter(void) {
     timerAttachInterrupt(timer, &onTimer, true);
     timerAlarmWrite(timer, 2500, true);
     timerAlarmEnable(timer);
-
 }
 
 //loop400Hzの更新関数
