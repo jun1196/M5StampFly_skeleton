@@ -190,11 +190,14 @@ void flight_mode(void) {
     onboard_led2(YELLOW, 1);
     StampFly.ref.throttle = limit(Stick[THROTTLE], 0.0, 0.9);
     StampFly.ref.roll = limit(Stick[AILERON], -0.9, 0.9);
-    
-    float front_left_duty  = StampFly.ref.throttle + StampFly.ref.roll;
-    float front_right_duty = StampFly.ref.throttle - StampFly.ref.roll;
-    float rear_left_duty   = StampFly.ref.throttle + StampFly.ref.roll;
-    float rear_right_duty  = StampFly.ref.throttle - StampFly.ref.roll;
+    StampFly.ref.pitch = limit(Stick[ELEVATOR], -0.9, 0.9);
+    StampFly.ref.yaw = limit(Stick[RUDDER], -0.9, 0.9);
+
+    //ミキシング
+    float front_left_duty  = StampFly.ref.throttle + StampFly.ref.roll + StampFly.ref.pitch - StampFly.ref.yaw;
+    float front_right_duty = StampFly.ref.throttle - StampFly.ref.roll + StampFly.ref.pitch + StampFly.ref.yaw;
+    float rear_left_duty   = StampFly.ref.throttle + StampFly.ref.roll - StampFly.ref.pitch + StampFly.ref.yaw;
+    float rear_right_duty  = StampFly.ref.throttle - StampFly.ref.roll - StampFly.ref.pitch - StampFly.ref.yaw;
 
     motor_set_duty_fl(front_left_duty);
     motor_set_duty_fr(front_right_duty);
