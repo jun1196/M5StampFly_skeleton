@@ -198,6 +198,7 @@ void flight_mode(void) {
     //Arm（スロットル）ボタンを監視して押されたらParkingモードに復帰するためのコード
     if (armButtonPressedAndRerleased)StampFly.flag.mode = PARKING_MODE;
     armButtonPressedAndRerleased = 0;
+
 }
 
 void parking_mode(void) {
@@ -211,6 +212,26 @@ void parking_mode(void) {
     motor_stop();
     if (armButtonPressedAndRerleased)StampFly.flag.mode = FLIGHT_MODE;
     armButtonPressedAndRerleased = 0;
+
+    //加速度と角速度をシリアルモニタに表示するコード
+    USBSerial.printf("%9.4f %9.4f %9.4f %9.4f,%9.4f %9.4f %9.4f\n\r", 
+        StampFly.times.elapsed_time,
+        StampFly.sensor.accx, 
+        StampFly.sensor.accy, 
+        StampFly.sensor.accz,
+        StampFly.sensor.roll_rate,
+        StampFly.sensor.pitch_rate,
+        StampFly.sensor.yaw_rate);
+    
+    //Teleplotに対応したコード（以下の行のコメントを外し、上の8行はコメントにしてください）
+    //uint32_t t = (uint32_t)(StampFly.times.elapsed_time * 1000);
+    //USBSerial.printf(">AX:%d:%9.4f\n", t, StampFly.sensor.accx);
+    //USBSerial.printf(">AY:%d:%9.4f\n", t, StampFly.sensor.accy);
+    //USBSerial.printf(">AZ:%d:%9.4f\n", t, StampFly.sensor.accz);
+    //USBSerial.printf(">ROLL_RATE:%d:%9.4f\n", t, StampFly.sensor.roll_rate);
+    //USBSerial.printf(">PITCH_RATE:%d:%9.4f\n", t, StampFly.sensor.pitch_rate);
+    //USBSerial.printf(">YAW_RATE:%d:%9.4f\n", t, StampFly.sensor.yaw_rate);
+
 }
 
 float limit(float value, float min, float max) {
