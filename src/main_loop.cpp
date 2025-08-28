@@ -57,6 +57,7 @@ void flight_mode(void);
 void parking_mode(void);
 void loop_400Hz(void);
 float limit(float value, float min, float max);
+float deadband(float value, float db);
 
 // Main loop
 void loop_400Hz(void) {
@@ -188,12 +189,14 @@ void flight_mode(void) {
     // Set LED Color
     onboard_led1(YELLOW, 1);
     onboard_led2(YELLOW, 1);
+
+    //スロットルの値を取得
     StampFly.ref.throttle = limit(Stick[THROTTLE], 0.0, 0.9);
     
     //制御目標を送信機のStickの倒し量から取得
     StampFly.ref.roll = limit(Stick[AILERON], -0.9, 0.9);
     StampFly.ref.pitch = limit(Stick[ELEVATOR], -0.9, 0.9);
-    StampFly.ref.yaw = limit(Stick[RUDDER], -0.9, 0.9);
+    StampFly.ref.yaw = 5*limit(Stick[RUDDER], -0.9, 0.9);
 
     //角速度誤差を計算
     float roll_rate_error  = StampFly.ref.roll  - StampFly.sensor.roll_rate;
@@ -201,14 +204,22 @@ void flight_mode(void) {
     float yaw_rate_error   = StampFly.ref.yaw   - StampFly.sensor.yaw_rate;
 
     //比例ゲイン
-    float kp_roll  = 0.1;
-    float kp_pitch = 0.1;
-    float kp_yaw   = 1.0;
+    float kp_roll  = 0.06;
+    float kp_pitch = 0.06;
+    float kp_yaw   = 0.2;
 
     //比例制御則
     float delta_roll  = kp_roll  * roll_rate_error;
     float delta_pitch = kp_pitch * pitch_rate_error;
     float delta_yaw   = kp_yaw   * yaw_rate_error;
+
+    //トリム調整（機体のアンバランスをキャンセルするためトリム値を加算）
+    float trim_roll  = 0.01;
+    float trim_pitch = 0.00;
+    float trim_yaw   =  0.0;
+    delta_roll  += trim_roll;
+    delta_pitch += trim_pitch;
+    delta_yaw   += trim_yaw;
 
     //ミキシング
     float front_left_duty  = StampFly.ref.throttle + delta_roll + delta_pitch - delta_yaw;
@@ -221,6 +232,12 @@ void flight_mode(void) {
     front_right_duty = limit(front_right_duty, 0.0, 0.95);
     rear_left_duty   = limit(rear_left_duty,   0.0, 0.95);
     rear_right_duty  = limit(rear_right_duty,  0.0, 0.95);
+
+    //不感帯を適用（ファイルの最後にdeadband関数追加）
+    front_left_duty  = deadband(front_left_duty,  0.05);
+    front_right_duty = deadband(front_right_duty, 0.05);
+    rear_left_duty   = deadband(rear_left_duty,   0.05);
+    rear_right_duty  = deadband(rear_right_duty,  0.05);
 
     //PWMのDutyをセット
     motor_set_duty_fl(front_left_duty);
@@ -245,10 +262,19 @@ void parking_mode(void) {
     motor_stop();
     if (armButtonPressedAndRerleased)StampFly.flag.mode = FLIGHT_MODE;
     armButtonPressedAndRerleased = 0;
+
+    //電源電圧をシリアルモニタで表示
+    USBSerial.printf("Battery Voltage: %5.2f V\r\n", StampFly.sensor.voltage);
 }
 
 float limit(float value, float min, float max) {
     if (value < min) return min;
     if (value > max) return max;
     return value;
+}
+
+float deadband(float value, float db) {
+    if (value > db) return (value - db) / (1.0 - db);
+    if (value < -db) return (value + db) / (1.0 - db);
+    return 0.0;
 }
