@@ -24,8 +24,6 @@
  */
 
 #include "led.hpp"
-#include "rc.hpp"
-#include "stampfly.hpp"
 
 uint32_t Led_color       = 0x000000;
 uint32_t Led_color2      = 255;

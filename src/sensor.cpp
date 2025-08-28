@@ -26,8 +26,6 @@
 #include "sensor.hpp"
 #include "imu.hpp"
 #include "tof.hpp"
-#include "stampfly.hpp"
-
 
 Madgwick ahrs;
 INA3221 ina3221(INA3221_ADDR40_GND);  // Set I2C address to 0x40 (A0 pin -> GND)
