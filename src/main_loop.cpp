@@ -213,7 +213,7 @@ void parking_mode(void) {
     if (armButtonPressedAndRerleased)StampFly.flag.mode = FLIGHT_MODE;
     armButtonPressedAndRerleased = 0;
 
-    //加速度と角速度をシリアルモニタに表示するコード
+    //加速度と角速度をシリアルモニタに表示するコード(Lesson5)
     USBSerial.printf("%9.4f %9.4f %9.4f %9.4f,%9.4f %9.4f %9.4f\n\r", 
         StampFly.times.elapsed_time,
         StampFly.sensor.accx, 
