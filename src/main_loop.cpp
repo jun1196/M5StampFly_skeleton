@@ -99,6 +99,7 @@ void init_copter(void) {
     led_init();
     // Initialize Serial communication
     USBSerial.begin(115200);
+    USBSerial.setTxTimeoutMs(0);
     delay(1500);
     USBSerial.printf("Start StampFly! Skeleton\r\n");
     motor_init();
@@ -117,7 +118,6 @@ void init_copter(void) {
     timerAttachInterrupt(timer, &onTimer, true);
     timerAlarmWrite(timer, 2500, true);
     timerAlarmEnable(timer);
-
 }
 
 //loop400Hzの更新関数
@@ -198,6 +198,10 @@ void flight_mode(void) {
     //Arm（スロットル）ボタンを監視して押されたらParkingモードに復帰するためのコード
     if (armButtonPressedAndRerleased)StampFly.flag.mode = PARKING_MODE;
     armButtonPressedAndRerleased = 0;
+
+    //Stickの値をシリアルモニタに送る（Lesson2）
+    USBSerial.printf("Throttle: %5.2f AILERON: %5.2f ELEVATOR: %5.2f RUDDER: %5.2f\n", 
+        Stick[THROTTLE], Stick[AILERON], Stick[ELEVATOR], Stick[RUDDER]);
 }
 
 void parking_mode(void) {
