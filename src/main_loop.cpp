@@ -222,10 +222,10 @@ void flight_mode(void) {
     delta_yaw   += trim_yaw;
 
     //ミキシング
-    float front_left_duty  = StampFly.ref.throttle + 0.25*(  delta_roll + delta_pitch - delta_yaw)/BATTERY_VOLTAGE;
-    float front_right_duty = StampFly.ref.throttle + 0.25*(- delta_roll + delta_pitch + delta_yaw)/BATTERY_VOLTAGE;
-    float rear_left_duty   = StampFly.ref.throttle + 0.25*(  delta_roll - delta_pitch + delta_yaw)/BATTERY_VOLTAGE;
-    float rear_right_duty  = StampFly.ref.throttle + 0.25*(- delta_roll - delta_pitch - delta_yaw)/BATTERY_VOLTAGE;
+    float front_left_duty  = StampFly.ref.throttle + delta_roll + delta_pitch - delta_yaw;
+    float front_right_duty = StampFly.ref.throttle - delta_roll + delta_pitch + delta_yaw;
+    float rear_left_duty   = StampFly.ref.throttle + delta_roll - delta_pitch + delta_yaw;
+    float rear_right_duty  = StampFly.ref.throttle - delta_roll - delta_pitch - delta_yaw;
 
     //Duty比を0.0~0.95に制限
     front_left_duty  = limit(front_left_duty,  0.0, 0.95);
@@ -254,15 +254,15 @@ void parking_mode(void) {
     StampFly.counter.loop = 0;
     
     //PID Gain set
-    const float kp_roll  = 3.37f;
-    const float kp_pitch = 4.9f;
-    const float kp_yaw   = 25.0f;
-    const float ti_roll  = 0.8f;
-    const float ti_pitch = 0.8f;
-    const float ti_yaw   = 0.8f;
-    const float td_roll  = 0.025f;
-    const float td_pitch = 0.025f;
-    const float td_yaw   = 0.025;
+    const float kp_roll  = 0.049f;
+    const float kp_pitch = 0.071f;
+    const float kp_yaw   = 0.363f;
+    const float ti_roll  = 0.0f;
+    const float ti_pitch = 0.0f;
+    const float ti_yaw   = 0.0f;
+    const float td_roll  = 0.0f;
+    const float td_pitch = 0.0f;
+    const float td_yaw   = 0.0;
     const float eta_roll  = 0.052f;
     const float eta_pitch = 0.052f;
     const float eta_yaw   = 0.052f;
