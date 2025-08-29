@@ -198,6 +198,11 @@ void flight_mode(void) {
     StampFly.ref.pitch = limit(Stick[ELEVATOR], -0.9, 0.9);
     StampFly.ref.yaw = 5*limit(Stick[RUDDER], -0.9, 0.9);
 
+    //不感帯を適用（ファイルの最後にdeadband関数追加）
+    StampFly.ref.roll = deadband(StampFly.ref.roll, 0.03);
+    StampFly.ref.pitch   = deadband(StampFly.ref.pitch, 0.03);
+    StampFly.ref.yaw  = deadband(StampFly.ref.yaw,  0.03);
+
     //角速度誤差を計算
     float roll_rate_error  = StampFly.ref.roll  - StampFly.sensor.roll_rate;
     float pitch_rate_error = StampFly.ref.pitch - StampFly.sensor.pitch_rate;
@@ -232,12 +237,6 @@ void flight_mode(void) {
     front_right_duty = limit(front_right_duty, 0.0, 0.95);
     rear_left_duty   = limit(rear_left_duty,   0.0, 0.95);
     rear_right_duty  = limit(rear_right_duty,  0.0, 0.95);
-
-    //不感帯を適用（ファイルの最後にdeadband関数追加）
-    front_left_duty  = deadband(front_left_duty,  0.03);
-    front_right_duty = deadband(front_right_duty, 0.03);
-    rear_left_duty   = deadband(rear_left_duty,   0.03);
-    rear_right_duty  = deadband(rear_right_duty,  0.03);
 
     //PWMのDutyをセット
     motor_set_duty_fl(front_left_duty);
