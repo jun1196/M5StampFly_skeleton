@@ -69,7 +69,9 @@ float PID::update(float err, float h) {
     m_h = h;
 
     // 積分
-    m_integral = m_integral + m_h * (err + m_err) / 2 / m_ti;
+    if (m_ti != 0.0f) {
+        m_integral = m_integral + m_h * (err + m_err) / 2 / m_ti;
+    }
     if (m_integral > 30000.0f) m_integral = 30000.0f;
     if (m_integral < -30000.0f) m_integral = -30000.0f;
     // 不完全微分

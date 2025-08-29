@@ -2,6 +2,7 @@
 #define STAMPFLY_HPP
 
 #include <stdint.h>
+#include "pid.hpp"
 
 //Mode
 #define INIT_MODE       0
@@ -51,6 +52,13 @@ typedef struct{
 }counter_t;
 
 typedef struct{
+    PID thrust;
+    PID roll;
+    PID pitch;
+    PID yaw;    
+}pidstruct_t;
+
+typedef struct{
     float elapsed_time;
     float old_elapsed_time;
     float interval_time;
@@ -61,6 +69,7 @@ typedef struct{
     sensor_value_t sensor;
     flag_t flag;
     counter_t counter;
+    pidstruct_t pid;
     control_ref_t ref;
     times_t times;
 }stampfly_t;

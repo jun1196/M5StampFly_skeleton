@@ -208,15 +208,10 @@ void flight_mode(void) {
     float pitch_rate_error = StampFly.ref.pitch - StampFly.sensor.pitch_rate;
     float yaw_rate_error   = StampFly.ref.yaw   - StampFly.sensor.yaw_rate;
 
-    //比例ゲイン
-    float kp_roll  = 0.049;
-    float kp_pitch = 0.071;
-    float kp_yaw   = 0.363;
-
-    //比例制御則
-    float delta_roll  = kp_roll  * roll_rate_error;
-    float delta_pitch = kp_pitch * pitch_rate_error;
-    float delta_yaw   = kp_yaw   * yaw_rate_error;
+    //PID制御則
+    float delta_roll  = StampFly.pid.roll.update(roll_rate_error, StampFly.times.interval_time);
+    float delta_pitch = StampFly.pid.pitch.update(pitch_rate_error, StampFly.times.interval_time);
+    float delta_yaw   = StampFly.pid.yaw.update(yaw_rate_error, StampFly.times.interval_time);
 
     //トリム調整（機体のアンバランスをキャンセルするためトリム値を加算）
     float trim_roll  = 0.01;
@@ -258,6 +253,30 @@ void parking_mode(void) {
 
     StampFly.counter.loop = 0;
     
+    //PID Gain set
+    const float kp_roll  = 0.2;
+    const float kp_pitch = 0.29;
+    const float kp_yaw   = 1.5;
+    const float ti_roll  = 0.8;
+    const float ti_pitch = 0.8;
+    const float ti_yaw   = 0.8;
+    const float td_roll  = 0.025;
+    const float td_pitch = 0.025;
+    const float td_yaw   = 0.025;
+    const float eta_roll  = 0.052;
+    const float eta_pitch = 0.052;
+    const float eta_yaw   = 0.052;
+    const float h = 0.0025;
+
+    StampFly.pid.roll.set_parameter(  kp_roll,  ti_roll,  td_roll,  eta_roll,  h);
+    StampFly.pid.pitch.set_parameter( kp_pitch, ti_pitch, td_pitch, eta_pitch, h);
+    StampFly.pid.yaw.set_parameter(   kp_yaw,   ti_yaw,   td_yaw,   eta_yaw,   h);
+
+    //PID Integral Reset
+    StampFly.pid.roll.reset();
+    StampFly.pid.pitch.reset();
+    StampFly.pid.yaw.reset();
+
     motor_stop();
     if (armButtonPressedAndRerleased)StampFly.flag.mode = FLIGHT_MODE;
     armButtonPressedAndRerleased = 0;
