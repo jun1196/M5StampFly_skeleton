@@ -32,6 +32,13 @@ typedef struct{
 }sensor_value_t;
 
 typedef struct{
+    PID thrust;
+    PID roll;
+    PID pitch;
+    PID yaw;    
+}pidstruct_t;
+
+typedef struct{
 	float roll;
 	float pitch;
 	float yaw;
@@ -61,6 +68,7 @@ typedef struct{
     sensor_value_t sensor;
     flag_t flag;
     counter_t counter;
+    pidstruct_t pid;
     control_ref_t ref;
     times_t times;
 }stampfly_t;
