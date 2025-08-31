@@ -2,6 +2,7 @@
 #define STAMPFLY_HPP
 
 #include <stdint.h>
+#include "pid.hpp"
 
 //Mode
 #define INIT_MODE       0
