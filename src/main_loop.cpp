@@ -254,9 +254,9 @@ void parking_mode(void) {
     StampFly.counter.loop = 0;
     
     //PID Gain set
-    const float kp_roll  = 0.049f;
-    const float kp_pitch = 0.071f;
-    const float kp_yaw   = 0.363f;
+    const float kp_roll  = 0.7527f;
+    const float kp_pitch = 1.0508f;
+    const float kp_yaw   = 5.3724f;
     const float ti_roll  = 100.0f;
     const float ti_pitch = 100.0f;
     const float ti_yaw   = 100.0f;
